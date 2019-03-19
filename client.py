@@ -1,5 +1,6 @@
 import socket
 import tkinter as tk
+from tkinter import scrolledtext
 import threading as thread
 
 TCP_IP = '127.0.0.1'
@@ -25,6 +26,7 @@ class App:
     def sendTextMessage(self, message):
         message = bytes(message, "utf-8")
         self.s.send(message)
+        self.chatEntry.delete(0, "end")
 
     def listenForMessages(self):
         while self.stop == 0:
@@ -33,15 +35,19 @@ class App:
             if data == "":
                 pass
             else:
+                self.chatWindow.insert(tk.END, data)
                 print(data)
 
     def main(self):
         self.root = tk.Tk()
         self.root.configure(bg="#444444")
-        self.root.geometry("350x100")
+        self.root.geometry("350x300")
+        self.root.title("Chat Client")
         self.root.resizable(0,0)
-        self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222", fg="#DDDDDD", width=350)
+        self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222", fg="#DDDDDD", insertbackground="#DDDDDD", width=350)
         self.chatEntry.pack(side=tk.BOTTOM)
+        self.chatWindow = tk.Text(self.root, relief="flat", bg="#333333", fg="#DDDDDD", width=350, height=80, state=tk.DISABLED)
+        self.chatWindow.pack(side=tk.TOP, fill=tk.X)
         self.root.protocol("WM_DELETE_WINDOW", self.closeApp)
         self.root.bind('<KeyPress-Return>', (lambda event: self.sendTextMessage(self.chatEntry.get())))
         self.root.mainloop()
