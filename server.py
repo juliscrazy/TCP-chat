@@ -14,11 +14,13 @@ clientList = []
 def sendAll(data):
     global clientList
     for i in clientList:
-        try:
-            i.send(data)
-        except OSError:
-            clientList.remove(i)
-            continue
+        sent = False
+        while sent == False:
+            try:
+                i.send(data)
+                sent = True
+            except OSError:
+                clientList.remove(i)
 
 def clientHandler(conn):
     while True:
