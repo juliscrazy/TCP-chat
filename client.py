@@ -34,6 +34,8 @@ class App:
             data=data.decode("utf-8")
             if data == "":
                 pass
+            elif data == "end":
+                break
             else:
                 oldData = self.chatWindow.cget("text")
                 newData = oldData + "\n" + data
@@ -44,11 +46,12 @@ class App:
         self.root = tk.Tk()
         self.root.configure(bg="#444444")
         self.root.geometry("350x300")
+        self.root.iconbitmap('icon.ico')
         self.root.title("Chat Client")
         self.root.resizable(0,0)
-        self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222", fg="#FFFFFF", insertbackground="#DDDDDD", width=350)
+        self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222",fg="#DDDDDD", width=350)
         self.chatEntry.pack(side=tk.BOTTOM)
-        self.chatWindow = tk.Label(self.root, relief="flat", bg="#333333", fg="#DDDDDD", width=350, height=80, state=tk.DISABLED, anchor=tk.NW, justify=tk.LEFT)
+        self.chatWindow = tk.Label(self.root, relief="flat", bg="#333333",fg="#DDDDDD", width=350, height=80, anchor=tk.NW, justify=tk.LEFT)
         self.chatWindow.pack(side=tk.TOP, fill=tk.BOTH)
         self.root.protocol("WM_DELETE_WINDOW", self.closeApp)
         self.root.bind('<KeyPress-Return>', (lambda event: self.sendTextMessage(self.chatEntry.get())))

@@ -20,6 +20,10 @@ def sendAll(data):
             clientList.remove(i)
 
 def clientHandler(conn):
+    global clientList
+    #user setup
+    clientData = conn.recv(2000)
+    #message handler
     while True:
         data = conn.recv(BUFFER_SIZE)
         if not data: break
@@ -30,6 +34,7 @@ def clientHandler(conn):
             data = b'end'
             conn.send(data)  # echo
             conn.close()
+            clientList.remove(conn)
             break
         else:
             bname = bytes(str(clientName[1]), "utf-8")
