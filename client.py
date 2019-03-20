@@ -2,6 +2,7 @@ import socket
 import tkinter as tk
 from tkinter import scrolledtext
 import threading as thread
+import json
 
 TCP_IP = '127.0.0.1'
 TCP_PORT = 5005
@@ -13,11 +14,12 @@ class App:
         self.stop = 0
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((TCP_IP, TCP_PORT))
-        clientData = self.s.recv(BUFFER_SIZE)
-        clientData = clientData.decode("utf-8")
+        with open('clientData.json') as f:
+            self.clientData = json.load(f)
+        self.s.send(bytes(str(self.clientData), "utf-8"))
+        self.main()
         self.msgListener = thread.Thread(target=self.listenForMessages)
         self.msgListener.start()
-        self.main()
 
     def closeApp(self):
         #shuts down server and 
@@ -49,7 +51,7 @@ class App:
         self.root.configure(bg="#444444")
         self.root.geometry("350x300")
         self.root.iconbitmap('icon.ico')
-        self.root.title("Chat Client")
+        self.root.title("Chat Client - {0}".format(self.clientData["clientNick"]))
         self.root.resizable(0,0)
         self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222",fg="#DDDDDD", width=350)
         self.chatEntry.pack(side=tk.BOTTOM)

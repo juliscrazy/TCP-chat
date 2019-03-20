@@ -1,5 +1,6 @@
 import socket
 import _thread as thread
+import json
 
 TCP_IP = '127.0.0.1'
 TCP_PORT = 5005
@@ -19,17 +20,15 @@ def sendAll(data):
         except OSError:
             clientList.remove(i)
 
-def clientHandler(conn):
+def clientHandler(conn, clientData):
     global clientList
-    #user setup
-    clientData = conn.recv(2000)
     #message handler
     while True:
         data = conn.recv(BUFFER_SIZE)
         if not data: break
         printdata=data.decode("utf-8")
-        clientName = conn.getpeername()
-        print("received data:", printdata, clientName[1])
+        clientConnId = conn.getpeername()
+        print("received data:", printdata, clientConnId[1])
         if printdata == "end":
             data = b'end'
             conn.send(data)  # echo
@@ -37,12 +36,17 @@ def clientHandler(conn):
             clientList.remove(conn)
             break
         else:
-            bname = bytes(str(clientName[1]), "utf-8")
+            bname = bytes(str(clientData["clientNick"]), "utf-8")
             data = bname + b": " + data
             sendAll(data)
 
 while True:
     conn, addr = s.accept()
     print('New Client | Connection address:', addr)
-    thread.start_new_thread(clientHandler, (conn,))
+    #user setup
+    clientData = conn.recv(2000)
+    clientData = clientData.decode("utf-8")
+    clientData = json.loads(clientData.replace("'", "\""))
     clientList.append(conn)
+    sendAll(bytes("{0} connected. Say Hi!".format(clientData["clientNick"]), "utf-8"))
+    thread.start_new_thread(clientHandler, (conn, clientData))
