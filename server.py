@@ -19,7 +19,6 @@ def sendAll(data):
             i.send(data)
         except OSError:
             clientList.remove(i)
-    print(clientList)
 
 def clientHandler(conn, clientData):
     global clientList
@@ -40,8 +39,6 @@ def clientHandler(conn, clientData):
             bname = bytes(str(clientData["clientNick"]), "utf-8")
             data = bname + b": " + data
             sendAll(data)
-            print(data)
-            print(clientList)
 
 while True:
     conn, addr = s.accept()
