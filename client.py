@@ -1,8 +1,9 @@
+import json
 import socket
+import threading as thread
+import time
 import tkinter as tk
 from tkinter import scrolledtext
-import threading as thread
-import json
 
 TCP_IP = '127.0.0.1'
 TCP_PORT = 5005
@@ -17,9 +18,9 @@ class App:
         with open('clientData.json') as f:
             self.clientData = json.load(f)
         self.s.send(bytes(str(self.clientData), "utf-8"))
-        self.main()
         self.msgListener = thread.Thread(target=self.listenForMessages)
         self.msgListener.start()
+        self.main()
 
     def closeApp(self):
         #shuts down server and 
@@ -33,6 +34,7 @@ class App:
         self.chatEntry.delete(0, "end")
 
     def listenForMessages(self):
+        time.sleep(1)
         while self.stop == 0:
             data = self.s.recv(BUFFER_SIZE)
             data=data.decode("utf-8")
