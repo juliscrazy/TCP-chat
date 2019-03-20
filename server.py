@@ -14,26 +14,26 @@ clientList = []
 def sendAll(data):
     global clientList
     for i in clientList:
-        sent = False
-        while sent == False:
-            try:
-                i.send(data)
-                sent = True
-            except OSError:
-                clientList.remove(i)
+        try:
+            i.send(data)
+        except OSError:
+            clientList.remove(i)
 
 def clientHandler(conn):
     while True:
         data = conn.recv(BUFFER_SIZE)
         if not data: break
         printdata=data.decode("utf-8")
-        print("received data:", printdata, conn.getpeername())
+        clientName = conn.getpeername()
+        print("received data:", printdata, clientName[1])
         if printdata == "end":
             data = b'end'
             conn.send(data)  # echo
             conn.close()
             break
         else:
+            bname = bytes(str(clientName[1]), "utf-8")
+            data = bname + b": " + data
             sendAll(data)
 
 while True:
