@@ -13,6 +13,8 @@ class App:
         self.stop = 0
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((TCP_IP, TCP_PORT))
+        clientData = self.s.recv(BUFFER_SIZE)
+        clientData = clientData.decode("utf-8")
         self.msgListener = thread.Thread(target=self.listenForMessages)
         self.msgListener.start()
         self.main()
