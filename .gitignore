@@ -1,1 +1,5 @@
 .vscode/settings.json
+testclient/clientData.json
+testclient/client.py
+testclient/icon.ico
+.gitignore
