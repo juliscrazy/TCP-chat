@@ -5,7 +5,7 @@ import time
 import tkinter as tk
 from tkinter import scrolledtext
 
-TCP_IP = '192.168.178.29'
+TCP_IP = '127.0.0.1'
 TCP_PORT = 5005
 BUFFER_SIZE = 1024
 
