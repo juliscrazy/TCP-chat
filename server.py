@@ -27,8 +27,7 @@ def clientHandler(conn, clientData):
         data = conn.recv(BUFFER_SIZE)
         if not data: break
         printdata=data.decode("utf-8")
-        clientConnId = conn.getpeername()
-        print("received data:", printdata, clientConnId[1])
+        print("received data:", clientData["clientNick"], printdata)
         if printdata == "end":
             data = b'end'
             conn.send(data)  # echo
