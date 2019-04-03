@@ -52,9 +52,13 @@ class App:
             elif data == "end":
                 break
             else:
-                oldData = self.chatWindow.cget("text")
-                newData = oldData + "\n" + data
-                self.chatWindow.configure(text=newData)
+                #oldData = self.chatWindow.cget("text")
+                #newData = oldData + "\n" + data
+                self.chatWindow.configure(state=tk.NORMAL)
+                self.chatWindow.insert(tk.INSERT, "{0}\n".format(data))
+                self.chatWindow.see(tk.END)
+                self.chatWindow.configure(state=tk.DISABLED)
+                #self.chatWindow.configure(text=newData)
                 print(data)
 
     def _guisetup(self):
@@ -75,8 +79,9 @@ class App:
         self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222", fg="#DDDDDD", insertbackground="#DDDDDD", width=350)
         self.chatEntry.pack(side=tk.BOTTOM, fill=tk.X)
         #chat history
-        self.chatWindow = tk.Label(self.root, relief="flat", bg="#333333", fg="#DDDDDD", width=350, height=80, anchor=tk.SW, justify=tk.LEFT)
+        self.chatWindow = tk.scrolledtext.ScrolledText(self.root, relief="flat", bg="#333333", fg="#DDDDDD", width=350, height=80, wrap=tk.WORD) #anchor=tk.SW, justify=tk.LEFT
         self.chatWindow.pack(side=tk.TOP, fill=tk.BOTH)
+        self.chatWindow.vbar.pack_forget() #epic invisible scrollbar cus styles are a pain
         #binds
         self.root.protocol("WM_DELETE_WINDOW", self.closeApp)
         self.root.bind('<KeyPress-Return>', (lambda event: self.sendTextMessage(self.chatEntry.get())))
@@ -106,6 +111,7 @@ class App:
             self.parent.root.option_add("*Font", self.clientData["clientFont"])
             self.parent.root.title("Chat Client - {0}".format(self.clientData["clientNick"]))
             self.parent.sendTextMessage("sys changed name to {0}".format(self.clientData["clientNick"]))
+            self.parent.sendTextMessage(self.clientData["clientNick"])
 
         def _guisetup(self):
             #window setup
@@ -149,7 +155,8 @@ class App:
             self.FontEntry.insert(0, clientFontPrev)
             self.FontSizeEntry.insert(0, clientFontSizePrev)
             #Save Button
-            self.SaveButton = tk.Button(self.optns, command=lambda: self.safe(),relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Save", padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
+            self.SaveButton = tk.Button(self.optns, command=lambda: self.safe(),relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Save",
+                                        padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
             self.SaveButton.pack()
             #self.optns.after(200, lambda: self.NickEntry.focus_force())
             self.optns.mainloop()
