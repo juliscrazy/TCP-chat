@@ -103,7 +103,6 @@ class App:
                 f.close()
         
         def safe(self):
-            print("test")
             self.storeSettings(self.NickEntry.get(), self.FontEntry.get(), self.FontSizeEntry.get())
             self.optns.destroy()
             self.parent.reloadData()
@@ -147,7 +146,7 @@ class App:
             self.FontSizeEntry.pack(side=tk.LEFT)
             self.spacer1 = tk.Text(self.optns, bg="#444444", height="1",width="1",relief="flat", font=("Helvetica", 1))
             self.spacer1.pack()
-            #Fill previous
+            #Fill in previous
             self.NickEntry.insert(0, self.clientData["clientNick"])
             clientFontPrev = self.clientData["clientFont"].split(" ")
             clientFontSizePrev = clientFontPrev[1]
@@ -158,11 +157,12 @@ class App:
             self.SaveButton = tk.Button(self.optns, command=lambda: self.safe(),relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Save",
                                         padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
             self.SaveButton.pack()
-            #self.optns.after(200, lambda: self.NickEntry.focus_force())
-            self.optns.mainloop()
 
         def runwindow(self):
             self._guisetup()
+            self.optns.after(20, lambda: self.NickEntry.focus_force()) #put focus on nickname
+            self.optns.after(20, lambda: self.optns.geometry("")) #this line gives me the creeps
+            self.optns.mainloop()
 
 if __name__ == "__main__":
     app = App()
