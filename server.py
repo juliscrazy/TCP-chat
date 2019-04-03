@@ -42,6 +42,7 @@ def clientHandler(conn, clientData):
                 bdata = bytes(printdata, "utf-8")
                 data = bname + b" " + bdata
                 sendAll(data)
+                clientData["clientNick"] = conn.recv(BUFFER_SIZE).decode("utf-8")
         else:   
             bname = bytes(str(clientData["clientNick"]), "utf-8")
             data = bname + b": " + data
