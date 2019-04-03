@@ -36,6 +36,8 @@ def clientHandler(conn, clientData):
                 conn.close()
                 clientList.remove(conn)
                 print("dropped:", clientData["clientNick"])
+                bname = bytes(str(clientData["clientNick"]), "utf-8")
+                sendAll(bname + b" disconnected")
                 break
             elif "changed name to" in printdata: 
                 bname = bytes(str(clientData["clientNick"]), "utf-8")

@@ -19,6 +19,7 @@ class App:
             self.clientData = json.load(f)
         f.close()
         self.optnWindow = self.userOptionsWindow(self.clientData, self)
+        self.roomWindow = self.roomSelectWindow(self)
         self.s.send(bytes(str(self.clientData), "utf-8"))
         self.msgListener = thread.Thread(target=self.listenForMessages)
         self._guisetup()
@@ -75,6 +76,8 @@ class App:
         self.navOptnBar.pack(side=tk.TOP, fill=tk.X)
         self.userOptions = tk.Button(self.navOptnBar, command=(lambda: self.optnWindow.runwindow()),relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Settings", padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
         self.userOptions.pack(side=tk.LEFT)
+        self.roomSelect = tk.Button(self.navOptnBar, command=(lambda: self.roomWindow.runwindow()),relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Room", padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
+        self.roomSelect.pack(side=tk.LEFT)
         #entryline
         self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222", fg="#DDDDDD", insertbackground="#DDDDDD", width=350)
         self.chatEntry.pack(side=tk.BOTTOM, fill=tk.X)
@@ -163,6 +166,18 @@ class App:
             self.optns.after(20, lambda: self.NickEntry.focus_force()) #put focus on nickname
             self.optns.after(20, lambda: self.optns.geometry("")) #this line gives me the creeps
             self.optns.mainloop()
+    
+    class roomSelectWindow:
+
+        def __init__(self, parent):
+            self.parent = parent
+
+        def _guisetup(self):
+            pass
+
+        def runwindow(self):
+            self._guisetup()
+
 
 if __name__ == "__main__":
     app = App()
