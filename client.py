@@ -18,7 +18,7 @@ class App:
         with open('clientData.json') as f:
             self.clientData = json.load(f)
         f.close()
-        self.optnWindow = self.userOptionsWindow(self.clientData)
+        self.optnWindow = self.userOptionsWindow(self.clientData, self)
         self.s.send(bytes(str(self.clientData), "utf-8"))
         self.msgListener = thread.Thread(target=self.listenForMessages)
         self._guisetup()
@@ -28,9 +28,14 @@ class App:
 
     def closeApp(self):
         #shuts down server and 
-        self.s.send(b'end')
+        self.s.send(b'sys end')
         self.root.destroy()
         self.stop = 1
+
+    def reloadData(self):
+            with open('clientData.json') as f:
+                self.clientData = json.load(f)
+            f.close()
 
     def sendTextMessage(self, message):
         message = bytes(message, "utf-8")
@@ -78,8 +83,9 @@ class App:
 
     class userOptionsWindow:
 
-        def __init__(self, clientData):
+        def __init__(self, clientData, parent):
             self.clientData = clientData
+            self.parent = parent
 
         def storeSettings(self, NickName, Font, FontSize):
             with open('clientData.json') as f:
@@ -92,8 +98,14 @@ class App:
                 f.close()
         
         def safe(self):
+            print("test")
             self.storeSettings(self.NickEntry.get(), self.FontEntry.get(), self.FontSizeEntry.get())
             self.optns.destroy()
+            self.parent.reloadData()
+            self.clientData = self.parent.clientData
+            self.parent.root.option_add("*Font", self.clientData["clientFont"])
+            self.parent.root.title("Chat Client - {0}".format(self.clientData["clientNick"]))
+            self.parent.sendTextMessage("sys changed name to {0}".format(self.clientData["clientNick"]))
 
         def _guisetup(self):
             #window setup
@@ -129,8 +141,15 @@ class App:
             self.FontSizeEntry.pack(side=tk.LEFT)
             self.spacer1 = tk.Text(self.optns, bg="#444444", height="1",width="1",relief="flat", font=("Helvetica", 1))
             self.spacer1.pack()
+            #Fill previous
+            self.NickEntry.insert(0, self.clientData["clientNick"])
+            clientFontPrev = self.clientData["clientFont"].split(" ")
+            clientFontSizePrev = clientFontPrev[1]
+            clientFontPrev = clientFontPrev[0]
+            self.FontEntry.insert(0, clientFontPrev)
+            self.FontSizeEntry.insert(0, clientFontSizePrev)
             #Save Button
-            self.SaveButton = tk.Button(self.optns, command=lambda: self.safe,relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Save", padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
+            self.SaveButton = tk.Button(self.optns, command=lambda: self.safe(),relief="flat", bg="#282828", fg="#DDDDDD", bd="0", text="Save", padx=8, pady=2, activebackground="#444444", activeforeground="#FFFFFF")
             self.SaveButton.pack()
             #self.optns.after(200, lambda: self.NickEntry.focus_force())
             self.optns.mainloop()
