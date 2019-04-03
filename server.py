@@ -28,13 +28,21 @@ def clientHandler(conn, clientData):
         if not data: break
         printdata=data.decode("utf-8")
         print("received data:", clientData["clientNick"], printdata)
-        if printdata == "end":
-            data = b'end'
-            conn.send(data)  # echo
-            conn.close()
-            clientList.remove(conn)
-            break
-        else:
+        if "sys" in printdata:
+            printdata = printdata[4:]
+            if printdata == "end":
+                data = b'end'
+                conn.send(data)  # echo
+                conn.close()
+                clientList.remove(conn)
+                print("dropped:", clientData["clientNick"])
+                break
+            elif "changed name to" in printdata: 
+                bname = bytes(str(clientData["clientNick"]), "utf-8")
+                bdata = bytes(printdata, "utf-8")
+                data = bname + b" " + bdata
+                sendAll(data)
+        else:   
             bname = bytes(str(clientData["clientNick"]), "utf-8")
             data = bname + b": " + data
             sendAll(data)
