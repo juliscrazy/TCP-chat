@@ -40,8 +40,12 @@ class App:
 
     def sendTextMessage(self, message):
         message = bytes(message, "utf-8")
-        self.s.send(message)
+        self.s.send(b"sys message " + message)
         self.chatEntry.delete(0, "end")
+
+    def sendMessage(self, message):
+        message = bytes(message, "utf-8")
+        self.s.send(message)
 
     def listenForMessages(self):
         time.sleep(0.1)
@@ -82,7 +86,7 @@ class App:
         self.chatEntry = tk.Entry(self.root, relief="flat", bg="#222222", fg="#DDDDDD", insertbackground="#DDDDDD", width=350)
         self.chatEntry.pack(side=tk.BOTTOM, fill=tk.X)
         #chat history
-        self.chatWindow = tk.scrolledtext.ScrolledText(self.root, relief="flat", bg="#333333", fg="#DDDDDD", width=350, height=80, wrap=tk.WORD) #anchor=tk.SW, justify=tk.LEFT
+        self.chatWindow = tk.scrolledtext.ScrolledText(self.root, relief="flat", bg="#333333", fg="#DDDDDD", width=350, height=800, wrap=tk.WORD) #anchor=tk.SW, justify=tk.LEFT
         self.chatWindow.pack(side=tk.TOP, fill=tk.BOTH)
         self.chatWindow.vbar.pack_forget() #epic invisible scrollbar cus styles are a pain
         #binds
@@ -112,8 +116,8 @@ class App:
             self.clientData = self.parent.clientData
             self.parent.root.option_add("*Font", self.clientData["clientFont"])
             self.parent.root.title("Chat Client - {0}".format(self.clientData["clientNick"]))
-            self.parent.sendTextMessage("sys changed name to {0}".format(self.clientData["clientNick"]))
-            self.parent.sendTextMessage(self.clientData["clientNick"])
+            self.parent.sendMessage("sys changeName {0}".format(self.clientData["clientNick"]))
+            self.parent.sendMessage(self.clientData["clientNick"])
 
         def _guisetup(self):
             #window setup
