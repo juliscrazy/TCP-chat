@@ -3,3 +3,4 @@ testclient/clientData.json
 testclient/client.py
 testclient/icon.ico
 .gitignore
+__pycache__/random.cpython-36.pyc
