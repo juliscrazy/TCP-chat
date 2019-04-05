@@ -1,3 +1,3 @@
-# TCP-chat
+# A SIMPLE PYTHON CHAT
 
-A simple python TCP chat client and server example with GUI (uiuiui)
+client + server
